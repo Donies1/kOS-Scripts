@@ -1,0 +1,67 @@
+clearscreen.
+set radarOffset to 300.
+lock trueRadar to alt:radar - radarOffset.
+lock g to constant:g * body:mass / body:radius^2.			
+lock maxDecel to (ship:availablethrust / ship:mass) - g.	
+lock stopDist to ship:verticalspeed^2 / (2 * maxDecel).		
+lock idealThrottle to stopDist / trueRadar.					
+lock impactTime to trueRadar / abs(ship:verticalspeed).	
+lock aoa to 0. 
+lock errorScaling to 1.
+
+print "Initiating de-orbit burn.".
+lock steering to retrograde.
+wait 13.
+lock throttle to 1.
+wait 6.
+lock throttle to 0.
+wait 2.
+lock steering to up + R(0,-20,270).
+wait 15.
+toggle ag4.
+wait until alt:radar <=40000.
+toggle ag3.
+wait 30.
+toggle ag3.
+wait until alt:radar <=23000.
+
+SET STEERINGMANAGER:ROLLPID:KP TO 0.
+SET STEERINGMANAGER:ROLLPID:KI TO 0.
+
+lock steering to srfprograde + R(0,90,0).
+rcs off.
+SHIP:CONTROL:ROLL.
+
+WAIT UNTIL trueRadar < stopDist.
+    lock throttle to idealThrottle.
+	print "Performing hoverslam".
+SHIP:CONTROL:ROLL.
+	wait 1.
+    lock steering to srfretrograde.
+
+when alt:radar <=320 then { 
+set radarOffset to 200.
+}
+
+when alt:radar <=220 then { 
+lock steering to up.
+set radarOffset to 100.
+}
+
+when alt:radar <=120 then { 
+set radarOffset to 50.
+}
+
+when alt:radar <=55 then { 
+set radarOffset to 10.
+}
+
+when alt:radar <=70 then { 
+lock steering to up.
+toggle ag6.
+}
+
+WAIT UNTIL ship:status = "splashed".
+lock throttle to 0.
+kill.
+	
