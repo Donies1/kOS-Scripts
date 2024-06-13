@@ -1,0 +1,87 @@
+clearscreen.
+set ship:control:pilotmainthrottle to 0.
+
+Print "Beginning launch sequence...".
+wait 5.
+print "5.".
+wait 1.
+print "4.".
+wait 1.
+print "3.".
+wait 1.
+print "2.".
+wait 1.
+print "1.".
+wait 1.
+
+lock steering to up + R(0,0,180).
+lock throttle to 1.
+stage.
+print "Ignition.".
+wait 1.2.
+print "Liftoff.".
+wait 2.
+
+wait until altitude > 175.
+lock steering to up + R(0,-5,180).
+print "Pitching downrange.".
+
+wait until altitude > 4000.
+lock steering to up + R(0,-10,180).
+
+wait until altitude > 5000.
+lock steering to up + R(0,-15,180).
+
+wait until altitude > 7500.
+lock steering to up + R(0,-20,180).
+
+wait until altitude > 12000.
+lock steering to up + R(0,-25,180).
+
+wait until altitude > 15000.
+lock steering to up + R(0,-30,180).
+lock throttle to .75.
+
+wait until altitude > 20000.
+lock steering to up + R(0,-35,180).
+
+wait until altitude > 21000.
+toggle ag1.
+lock throttle to .5.
+wait .5.
+toggle ag1.
+lock throttle to .25.
+wait .5.
+stage.
+wait .3.
+lock throttle to 1.
+
+wait until altitude > 24000.
+lock steering to up + R(0,-45,180).
+
+wait until altitude > 30000.
+lock steering to up + R(0,-55,180).
+
+wait until altitude > 35000.
+lock steering to up + R(0,-60,180).
+
+wait until altitude >40000.
+lock steering to up + R(0,-65,180).
+
+when altitude >= 50000 then {
+	rcs on.
+}
+
+wait until apoapsis >=100000.
+lock throttle to 0.
+
+wait until altitude > 60000.
+lock steering to up + R(0,-90,180).
+
+wait until altitude >= 98500.
+lock throttle to 1.
+wait until periapsis >=95000.
+lock throttle to 0.
+wait 1.
+print "Orbit".
+
