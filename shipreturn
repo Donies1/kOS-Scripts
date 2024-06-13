@@ -1,3 +1,5 @@
+//Once in a good position in orbit, I run this script to deorbit and land starship
+//Landing burn code was written by ayybradleyjh and edwinrobert
 clearscreen.
 set radarOffset to 300.
 lock trueRadar to alt:radar - radarOffset.
