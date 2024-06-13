@@ -1,0 +1,52 @@
+clearscreen.
+wait until altitude > 30000.
+toggle ag1.
+wait .1.
+toggle ag1.
+lock throttle to .25.
+set radarOffset to 50.
+lock trueRadar to alt:radar - radarOffset. //this is all the suicide burn calculation						
+lock g to constant:g * body:mass / body:radius^2.			
+lock maxDecel to (ship:availablethrust / ship:mass) - g.	
+lock stopDist to ship:verticalspeed^2 / (2 * maxDecel).		
+lock idealThrottle to stopDist / trueRadar.					
+lock impactTime to trueRadar / abs(ship:verticalspeed).	
+lock aoa to 30. //the mazimum angle you want your ship to angle itself at to move the impact position towards the landingsite.
+lock errorScaling to 1.                                               //all the functions are here
+
+rcs on.
+lock steering to up + R(0,90,90).
+wait 5.
+lock throttle to .25.
+wait 25.
+lock throttle to 1.
+wait 9.
+lock throttle to 0.
+lock steering to srfretrograde.
+toggle ag2.
+toggle ag5.
+wait 35.
+toggle ag5.
+brakes on.
+
+
+WAIT UNTIL trueRadar < stopDist.
+    lock throttle to idealThrottle.
+	print "Performing hoverslam". 
+	wait 2.2.
+	lock aoa to -10.
+	when alt:radar <= 1600 then { lock aoa to -10. }
+	when alt:radar <= 800 then { lock aoa to -3. }
+
+wait until alt:radar <= 300.
+lock aoa to -3.
+lock steering to up + R(0,0,90).
+
+
+wait until alt:radar <= 70.
+toggle ag1.
+
+WAIT UNTIL ship:status = "splashed".
+lock throttle to 0.
+rcs off.
+kill.
