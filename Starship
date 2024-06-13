@@ -1,3 +1,4 @@
+//This is the script I use for the launch, ascent, and orbit of Starship.
 clearscreen.
 set ship:control:pilotmainthrottle to 0.
 
