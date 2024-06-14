@@ -1,50 +1,36 @@
 //This is the script I use for the launch, ascent, and orbit of Starship.
+
 clearscreen.
 set ship:control:pilotmainthrottle to 0.
+print "launching".
 
-Print "Beginning launch sequence...".
-wait 5.
-print "5.".
-wait 1.
-print "4.".
-wait 1.
-print "3.".
-wait 1.
-print "2.".
-wait 1.
-print "1.".
-wait 1.
-
-lock steering to up + R(0,0,180).
-lock throttle to 1.
 stage.
-print "Ignition.".
-wait 1.2.
-print "Liftoff.".
-wait 2.
+lock steering to heading(90,90) + R(0,0,270).
+lock throttle to 1.
 
-wait until altitude > 175.
-lock steering to up + R(0,-5,180).
-print "Pitching downrange.".
+wait until ship:velocity:surface:mag >=50.
+lock steering to heading(90,85)+ R(0,0,270).
+print "turning".
 
-wait until altitude > 4000.
-lock steering to up + R(0,-10,180).
+wait until vAng (ship:facing:vector, heading(90,85):vector) <=0.3.
+print "ready".
 
-wait until altitude > 5000.
-lock steering to up + R(0,-15,180).
+wait until vAng(ship:srfprograde:vector, ship:facing:vector) <=1.
+print "prograde".
+lock steering to heading(90,80)+ R(0,0,270).
 
-wait until altitude > 7500.
-lock steering to up + R(0,-20,180).
+wait until vAng (ship:facing:vector, heading(90,80):vector) <=0.3.
+print "ready".
 
-wait until altitude > 12000.
-lock steering to up + R(0,-25,180).
 
-wait until altitude > 15000.
-lock steering to up + R(0,-30,180).
-lock throttle to .75.
+wait until vAng(ship:srfprograde:vector, ship:facing:vector) <=1.
+print "prograde".
 
-wait until altitude > 20000.
-lock steering to up + R(0,-35,180).
+lock steering to lookDirUp((ship:srfPrograde:vector)+ R(0,-3,0),v(0,-1,0)).
+
+when altitude >= 15000 then {
+lock throttle to .5.
+}
 
 wait until altitude > 21000.
 toggle ag1.
@@ -55,34 +41,36 @@ lock throttle to .25.
 wait .5.
 stage.
 wait .3.
-lock throttle to 1.
+lock throttle to .5.
 
-wait until altitude > 24000.
-lock steering to up + R(0,-45,180).
-
-wait until altitude > 30000.
-lock steering to up + R(0,-55,180).
-
-wait until altitude > 35000.
-lock steering to up + R(0,-60,180).
-
-wait until altitude >40000.
-lock steering to up + R(0,-65,180).
-
-when altitude >= 50000 then {
-	rcs on.
+when ship:airspeed >= 800 and ship:altitude >=40000 then {
+	lock throttle to 1.
 }
 
-wait until apoapsis >=100000.
-lock throttle to 0.
+wait until ship:altitude >=36000.
+lock throttle to 1.
+lock steering to lookDirUp((ship:prograde:vector)+ R(0,-3,0),v(0,-1,0)).
+print "orbit prograde".
 
-wait until altitude > 60000.
-lock steering to up + R(0,-90,180).
 
-wait until altitude >= 98500.
+
+when ship:orbit:apoapsis >=100000 then {
+	lock throttle to 0.
+	rcs on.
+	lock steering to lookDirUp((ship:prograde:vector),v(0,-1,0)).
+}
+
+wait until altitude >=90000.
+
+if eta:apoapsis > orbit:period/2 {
+lock steering to heading (0,0) + R(0,0,270).
+}
+else {
+lock steering to lookDirUp((ship:prograde:vector),v(0,-1,0)).
+}
+
+wait until eta:apoapsis <=10.
 lock throttle to 1.
 wait until periapsis >=95000.
 lock throttle to 0.
 wait 1.
-print "Orbit".
-
