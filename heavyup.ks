@@ -1,3 +1,5 @@
+//Script for controlling the Falcon Heavy upper stage. Pushes payload to orbit at 100000 meters. Run this at launch
+
 clearScreen.
 
 function doStage2 {
