@@ -1,3 +1,5 @@
+//Script for launching Falcon Heavy and landing the core booster. Run this at launch.
+
 clearscreen.
 set ship:control:pilotmainthrottle to 0.
 
