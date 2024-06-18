@@ -1,7 +1,11 @@
+//Controls core booster on falcon heavy
+//Run this when using FMRS mod
+//Run this when you have just decoupled from upper stage, with the booster as the selected craft
+//Must have trajectories mod to work
 clearscreen.
 set ship:control:pilotmainthrottle to 0.
 
-set target to "(ocisly".
+set target to "(ocisly". //Your landing target here
 set boat to latlng(target:latitude,target:longitude).
 set radarOffset to 35.
 parameter landingsite is latlng(target:latitude,target:longitude).
