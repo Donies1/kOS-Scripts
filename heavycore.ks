@@ -3,7 +3,8 @@
 clearscreen.
 set ship:control:pilotmainthrottle to 0.
 
-set target to "boat".
+set target to "(ocisly" //Your landing target here
+set boat to latlng(target:latitude,target:longitude).
 set radarOffset to 35.
 parameter landingsite is latlng(target:latitude,target:longitude).
 lock trueRadar to alt:radar - radarOffset.					
@@ -46,11 +47,18 @@ function getSteering {
 
 function dolaunch {
     lock throttle to 1.
+    addons:tr:SETTARGET(boat).
+    if addons:tr:hastarget = true {
+        print "target found".
+    }
+    else {
+        print "no target".
+    }
     stage.
     toggle ag1.
     lock steering to up + R(0,0,90).
     wait until altitude >=750.
-    lock pitch to 88.963 - 1.03287 * alt:radar^0.409511.
+    lock pitch to 90 - .8 * alt:radar^0.409511.
  set tdirection to 90.
  lock steering to heading(tdirection,pitch) + R(0,0,180).
     wait until altitude >= 12500. 
@@ -61,77 +69,100 @@ function dolaunch {
 
 function doStage1 {
     print "working".
-    lock pitch to 88.963 - 1.03287 * alt:radar^0.409511.
+    lock pitch to 90 - .8 * alt:radar^0.409511.
  set tdirection to 90.
  lock steering to heading(tdirection,pitch) + R(0,0,180).
     lock throttle to .25.
-    wait until missionTime >= 100.
+    wait until altitude >= 16500.
     toggle ag2.
     stage.
     lock throttle to .75.
-    wait until missionTime >= 136.
+    wait until apoapsis >=70000.
     lock throttle to 0.
     stage.   
-    wait 10.
+    wait 5.
     dodescent().
+}
+
+function dosteering{
+    lock impact to addons:tr:impactpos.
+    set difference to (impact:lat - boat:lat). 
+         if difference > 0 {
+        lock steering to heading(85,180).
+         when (impact:lat - boat:lat) <= 0.000000001 then {
+            lock steering to heading(90,180).
+         }
+     } else if difference < 0 {
+        lock steering to heading(95,180).
+         when (impact:lat - boat:lat) <= 0.0000000001 then {
+            lock steering to heading(90,180).
+         }
+     }
 }
 
 function dodescent {
     clearScreen.
-    "descent started".
+    set target to "(ocisly".
+    set boat to latlng(target:latitude,target:longitude).
+    addons:tr:SETTARGET(boat).
+    lock impact to addons:tr:impactpos.
+    set difference to (impact:lat - boat:lat). 
+    print "descent started".
     rcs on.
-    set target to "boat".
-    lock steering to heading (90,180).
-    wait until vAng(ship:facing:vector, heading(90,180):vector) <=25.
- lock throttle to 1.
- print "Boostback".
- wait 11.7.
- lock throttle to 0.
- print "Boostback Complete".
- lock steering to srfretrograde.
- doentry().
+    dosteering().
+    print "ready for burn".
+    wait until vAng(ship:facing:vector, heading(90,180):vector) <=20.
+    lock throttle to 1.
+    print "Boostback".
+    wait until (impact:lng - boat:lng) <= .5. 
+    lock throttle to 0.
+    print "Boostback Complete".
+    lock steering to srfretrograde.
+    doentry().
 }
 
 function doentry {
     print "entry started".
-    wait until altitude <=30000.
+    lock steering to srfretrograde + R(0,3,0).
+    wait until altitude <=35000.
  lock throttle to 1.
  toggle ag3.
  toggle ag4.
- wait until ship:velocity:surface:mag <=700.
+ wait until (impact:lng - boat:lng) <= .1.
+ lock steering to retrograde.
+ wait until ship:velocity:surface:mag <= 700.
  lock throttle to 0.
  toggle brakes.
- rcs off.
  lock steering to getSteering().
- lock aoa to 30.
+ lock aoa to 20.
  wait until altitude <= 20000.
  doland().
 }
 
 function doland {
-    print "landing started".
-    lock steering to getSteering().
-  lock aoa to 30.
-  when alt:radar < 12000 then{
- lock aoa to 20.
+ print "landing started".
+ lock steering to getSteering().
+  lock aoa to 20.
+  wait until alt:radar <= 12000. {
+    lock aoa to 20.
   }
-  when alt:radar < 7000 then {
- lock aoa to 15.
+  when alt:radar <= 7000 then {
+    lock aoa to 15.
+    rcs off.
   }
-    toggle ag4.
-    when impactTime < 3.5 then {gear on.} 
-    when  trueRadar < stopDist then {
+ toggle ag4.
+ when impactTime < 3.5 then {gear on.} 
+ wait until  trueRadar < stopDist. {
      lock throttle to idealThrottle.
-	 print "Performing hoverslam".
-     
+	 print "Performing hoverslam".    
      lock aoa to 15.	
      lock steering to getSteering().
-     when alt:radar <= 800 then { lock aoa to -10. }
-    when alt:radar <= 150 then { lock aoa to -3. }
- when alt:radar <=70 then { 
+     when alt:radar <= 1000 then { lock aoa to -10. }
+    when alt:radar <= 100 then { lock aoa to -3. }
+ when alt:radar <=80 then { 
  lock steering to up.
  }
- WAIT UNTIL ship:status = "landed".
+ WAIT UNTIL ship:status = "Landed".
  doshutdown().
 }
 }
@@ -143,7 +174,7 @@ function doshutdown {
  wait until ship:velocity:surface:mag <=.3.
     print "The Falcon has landed".
 	set ship:control:pilotmainthrottle to 0.
-shutdown.
+ shutdown.
 }
 
 Print "Beginning launch sequence...".
@@ -161,4 +192,3 @@ print "1.".
 wait 1.
 
 dolaunch().
-
