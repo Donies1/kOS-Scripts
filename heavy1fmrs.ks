@@ -1,8 +1,12 @@
+//Controls left booster on falcon heavy
+//Run this when using FMRS mod
+//Run this when you have just decoupled from core, with the booster as the selected craft
+//Must have trajectories mod to work
 clearscreen.
 set ship:control:pilotmainthrottle to 0.
 
 set radarOffset to 25.
-parameter landingsite is latlng(-0.132238820195198,-74.5474700927734).
+parameter landingsite is latlng(-0.132238820195198,-74.5474700927734).//YOUR LANDING POSITION HERE
 set lz1 to latlng(-0.132238820195198,-74.5474700927734).
 lock trueRadar to alt:radar - radarOffset.					
 lock g to constant:g * body:mass / body:radius^2.			
