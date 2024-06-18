@@ -1,8 +1,11 @@
+//Controls right booster on falcon heavy
+//Must have Trajectories mod to work
+//Run at launch
 clearscreen.
 set ship:control:pilotmainthrottle to 0.
 
 set radarOffset to 25.
-parameter landingsite is latlng(-0.150009542703629,-74.5591583251953).
+parameter landingsite is latlng(-0.150009542703629,-74.5591583251953). //YOUR LANDING POSITION HERE
 set lz2 to latlng(-0.150009542703629,-74.5591583251953).
 lock trueRadar to alt:radar - radarOffset.					
 lock g to constant:g * body:mass / body:radius^2.			
