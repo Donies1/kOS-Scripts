@@ -1,7 +1,10 @@
+//Script for Superheavy Booster tower landing. Run this at launch
+//Action group 1 is next engine mode on booster engines
+//Action group 2 is deploy grid fins
 clearscreen.
 set ship:control:pilotmainthrottle to 0.
 wait 5.
-set target to "FullStack Base".
+set target to "FullStack Base". //Set this to the name of the tower
 set tower to latlng(target:latitude,target:longitude).
 set radarOffset to 60.
 parameter landingsite is latlng(target:latitude,target:longitude).
