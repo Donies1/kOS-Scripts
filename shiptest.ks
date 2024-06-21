@@ -1,3 +1,5 @@
+//set all coordinates to your landing site
+//Action group 1 activates flaps
 clearscreen.
 
 parameter landingsite is latlng(-0.205731332302094, -74.4730758666992).
