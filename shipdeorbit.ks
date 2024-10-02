@@ -1,3 +1,7 @@
+//set action group 4 to deploy all 4 flaps
+//set action group 3 to shut down Raptor Vacuum engines
+//set action group 2 to activate LOX vent
+//THIS IS UNFINISHED feel free to edit some values
 clearscreen.
 
 set radarOffset to 24.
